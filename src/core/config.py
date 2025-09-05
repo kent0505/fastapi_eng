@@ -1,0 +1,26 @@
+from dotenv import load_dotenv
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings
+
+import os
+
+load_dotenv()
+
+class Swagger(BaseModel):
+    ui_parameters: dict = {"defaultModelsExpandDepth": -1}
+
+class JWT(BaseModel):
+    exp: int = 2629746 # one month
+    key: str = os.getenv("KEY")
+    algorithm: str = "HS256"
+    admin: str = os.getenv("ADMIN")
+
+class DB(BaseModel):
+    url: str = os.getenv("POSTGRES_URL")
+
+class Settings(BaseSettings):
+    swagger: Swagger = Swagger()
+    jwt: JWT = JWT()
+    db: DB = DB()
+
+settings = Settings()

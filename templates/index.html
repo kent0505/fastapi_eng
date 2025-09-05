@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="icon" type="image/png" href="/static/icon.png" />
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <h2>Users</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>phone</th>
+                <th>name</th>
+                <th>age</th>
+                <th>role</th>
+                <th>code</th>
+                <th>fcm</th>
+                <th>photo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.age }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.code }}</td>
+                    <td>{{ user.fcm }}</td>
+                    <td>{{ user.photo }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
