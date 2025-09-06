@@ -18,9 +18,13 @@ class JWT(BaseModel):
 class DB(BaseModel):
     url: str = os.getenv("POSTGRES_URL")
 
+class Rabbit(BaseModel):
+    url: str = os.getenv("RABBIT_URL")
+
 class Settings(BaseSettings):
     swagger: Swagger = Swagger()
     jwt: JWT = JWT()
     db: DB = DB()
+    rabbit: Rabbit = Rabbit()
 
 settings = Settings()

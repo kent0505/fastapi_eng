@@ -18,7 +18,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan,
-    title="Vizor",
+    title="Eng",
     description=settings.jwt.admin,
     swagger_ui_parameters=settings.swagger.ui_parameters,
 )

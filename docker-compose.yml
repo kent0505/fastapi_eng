@@ -12,19 +12,6 @@ services:
     volumes:
       - ./app:/app
 
-  eng:
-    build: ./eng
-    container_name: eng
-    ports:
-      - "8001:8000"
-    env_file:
-      - .env
-    networks:
-      - app-network
-    restart: unless-stopped
-    volumes:
-      - ./eng:/app
-
   db:
     image: postgres:15
     container_name: postgres

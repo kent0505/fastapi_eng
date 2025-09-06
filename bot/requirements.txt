@@ -1,0 +1,7 @@
+aiogram
+
+# settings
+python-dotenv
+pydantic-settings
+
+faststream[rabbit]

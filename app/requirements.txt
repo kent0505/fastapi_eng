@@ -16,3 +16,5 @@ pyjwt
 bcrypt
 
 jinja2
+
+faststream[rabbit]
