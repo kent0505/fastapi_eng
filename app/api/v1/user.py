@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from core.utils import check_password, hash_password
 from core.security import JWTBearer, Roles, UserDep
-from db import select, SessionDep
+from db import SessionDep, select
 from db.user import User, UserUpdateSchema, UserPasswordSchema
 
 router = APIRouter(dependencies=[Depends(JWTBearer(role=Roles.user))])
@@ -26,6 +26,7 @@ async def get_user(
             "photo": user.photo,
             "role": user.role,
             "lesson": user.lesson,
+            "paid": user.paid,
             "activities": user.activities,
         }
     }
@@ -39,13 +40,15 @@ async def edit_user(
     user = await db.scalar(select(User).filter_by(id=id))
     if not user:
         raise HTTPException(404, "user not found")
+    
+    username = body.username.lower().strip()
 
-    if user.username != body.username:
-        exists = await db.scalar(select(User).filter_by(username=body.username))
+    if user.username != username:
+        exists = await db.scalar(select(User).filter_by(username=username))
         if exists:
-            raise HTTPException(409, "user already exist")
+            raise HTTPException(409, "username already exist")
 
-    user.username = body.username
+    user.username = username
     user.age = body.age
     await db.commit()
 
@@ -75,6 +78,23 @@ async def edit_user_password(
 
     return {"message": "user password updated"}
 
+# @router.patch("/photo")
+# async def edit_user_photo(
+#     id: UserDep,
+#     db: SessionDep,
+#     file: UploadFile = File(),
+# ):
+#     user = await db.scalar(select(User).filter_by(id=id))
+#     if not user:
+#         raise HTTPException(404, "user not found")
+
+#     # photo = await s3_service.put_object(id, "users", file)
+
+#     # user.photo = photo
+#     # await db.commit()
+
+#     return {"message": "user photo updated"}
+
 @router.patch("/paid")
 async def edit_user_paid(
     id: UserDep,
@@ -88,7 +108,7 @@ async def edit_user_paid(
     user.paid += paid
     await db.commit()
 
-    return {"message": "user password updated"}
+    return {"message": "user paid updated"}
 
 @router.delete("/")
 async def delete_user(

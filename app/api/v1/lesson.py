@@ -1,15 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from core.security import JWTBearer
-from db import select, SessionDep
+from db import SessionDep, select
 from db.lesson import Lesson, LessonSchema
 
 router = APIRouter(dependencies=[Depends(JWTBearer())])
-
-@router.get("/")
-async def get_lessons(db: SessionDep):
-    lessons = (await db.scalars(select(Lesson).order_by(Lesson.position.asc(), Lesson.id.asc()))).all()
-
-    return {"lessons": lessons}
 
 @router.post("/")
 async def add_lesson(
@@ -48,7 +42,7 @@ async def edit_lesson(
 @router.patch("/")
 async def edit_lesson_position(
     id: int,
-    position: int,
+    position: float,
     db: SessionDep,
 ):
     lesson = await db.scalar(select(Lesson).filter_by(id=id))

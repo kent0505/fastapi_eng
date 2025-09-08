@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from core.security import signJWT, Roles
 from core.utils import hash_password, check_password, get_timestamp
 from core.config import settings
-from db import select, SessionDep
+from db import SessionDep, select
 from db.user import User, LoginSchema
 
 router = APIRouter()
@@ -12,7 +12,9 @@ async def login(
     body: LoginSchema,
     db: SessionDep,
 ):
-    user = await db.scalar(select(User).filter_by(username=body.username))
+    username = body.username.lower().strip()
+
+    user = await db.scalar(select(User).filter_by(username=username))
     if not user:
         raise HTTPException(404, "user not found")
 
@@ -35,7 +37,9 @@ async def register(
     body: LoginSchema,
     db: SessionDep,
 ):
-    user = await db.scalar(select(User).filter_by(username=body.username))
+    username = body.username.lower().strip()
+
+    user = await db.scalar(select(User).filter_by(username=username))
     if user:
         raise HTTPException(409, "user already exist")
 
@@ -45,7 +49,7 @@ async def register(
     admin = await db.scalar(select(User).filter_by(role=Roles.admin.value))
 
     user = User(
-        username=body.username,
+        username=username,
         password=hash_password(body.password),
         role=Roles.admin.value if not admin else Roles.user.value,
     )

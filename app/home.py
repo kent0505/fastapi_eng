@@ -13,7 +13,7 @@ async def home(
     db: SessionDep,
 ):
     users = (await db.scalars(select(User))).all()
-    lessons = (await db.scalars(select(Lesson).order_by(Lesson.position.asc(), Lesson.id.asc()))).all()
+    lessons = (await db.scalars(select(Lesson).order_by(Lesson.position.asc()))).all()
 
     return templates.TemplateResponse(
         "index.html", {
