@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from core.security import signJWT
+from core.security import signJWT, Roles
 from core.utils import hash_password, check_password, get_timestamp
 from core.config import settings
 from db import select, SessionDep
@@ -13,20 +13,11 @@ async def login(
     db: SessionDep,
 ):
     user = await db.scalar(select(User).filter_by(username=body.username))
-    if user:
-        if not check_password(
-            body.password, 
-            user.password,
-        ):
-            raise HTTPException(401, "invalid credentials")
-    else:
-        user = User(
-            username=body.username,
-            password=hash_password(body.password),
-        )
-        db.add(user)
-        await db.commit()
-        await db.refresh(user)
+    if not user:
+        raise HTTPException(404, "user not found")
+
+    if not check_password(body.password, user.password):
+        raise HTTPException(401, "invalid credentials")
 
     access_token: str = signJWT(
         user.id, 
@@ -38,3 +29,27 @@ async def login(
         "access_token": access_token,
         "role": user.role,
     }
+
+@router.post("/register")
+async def register(
+    body: LoginSchema,
+    db: SessionDep,
+):
+    user = await db.scalar(select(User).filter_by(username=body.username))
+    if user:
+        raise HTTPException(409, "user already exist")
+
+    if body.password.__len__() < 5:
+        raise HTTPException(422, "password must be at least 5 characters long")
+    
+    admin = await db.scalar(select(User).filter_by(role=Roles.admin.value))
+
+    user = User(
+        username=body.username,
+        password=hash_password(body.password),
+        role=Roles.admin.value if not admin else Roles.user.value,
+    )
+    db.add(user)
+    await db.commit()
+
+    return {"message": "user registered"}

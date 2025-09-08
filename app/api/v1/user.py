@@ -1,42 +1,105 @@
-from fastapi import APIRouter, HTTPException
-from core.security import signJWT, Roles
-from core.utils import hash_password, check_password, get_timestamp
-from core.config import settings
+from fastapi import APIRouter, HTTPException, Depends
+from core.utils import check_password, hash_password
+from core.security import JWTBearer, Roles, UserDep
 from db import select, SessionDep
-from db.user import User, LoginSchema
+from db.user import User, UserUpdateSchema, UserPasswordSchema
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(JWTBearer(role=Roles.user))])
 
-# @router.post("/login")
-# async def login(
-#     body: LoginSchema,
-#     db: SessionDep,
-# ):
-#     user = await db.scalar(select(User).filter_by(username=body.username))
-#     if user:
-#         if not check_password(
-#             body.password, 
-#             user.password,
-#         ):
-#             raise HTTPException(401, "Invalid credentials")
-#     else:
-#         hashed = hash_password(body.password)
-#         user = User(
-#             username=body.username,
-#             password=hashed,
-#         )
-#         db.add(user)
-#         await db.commit()
-#         await db.refresh(user)
+@router.get("/")
+async def get_user(
+    id: UserDep,
+    db: SessionDep,
+):
+    user = await db.scalar(select(User).filter_by(id=id))
+    if not user:
+        raise HTTPException(404, "user not found")
 
-#     access_token: str = signJWT(
-#         user.id, 
-#         user.role, 
-#         get_timestamp() + settings.jwt.exp,
-#     )
+    user.activities += 1
+    await db.commit()
 
-#     return {
-#         "access_token": access_token,
-#         "role": user.role,
-#     }
+    return {
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "age": user.age,
+            "photo": user.photo,
+            "role": user.role,
+            "lesson": user.lesson,
+            "activities": user.activities,
+        }
+    }
 
+@router.put("/")
+async def edit_user(
+    id: UserDep,
+    body: UserUpdateSchema,
+    db: SessionDep,
+):
+    user = await db.scalar(select(User).filter_by(id=id))
+    if not user:
+        raise HTTPException(404, "user not found")
+
+    if user.username != body.username:
+        exists = await db.scalar(select(User).filter_by(username=body.username))
+        if exists:
+            raise HTTPException(409, "user already exist")
+
+    user.username = body.username
+    user.age = body.age
+    await db.commit()
+
+    return {"message": "user updated"}
+
+@router.patch("/password")
+async def edit_user_password(
+    id: UserDep,
+    body: UserPasswordSchema,
+    db: SessionDep,
+):
+    user = await db.scalar(select(User).filter_by(id=id))
+    if not user:
+        raise HTTPException(404, "user not found")
+    
+    if not check_password(body.password, user.password):
+        raise HTTPException(401, "invalid credentials")
+    
+    if body.new_password.__len__() < 5:
+        raise HTTPException(422, "password must be at least 5 characters long")
+    
+    if body.password == body.new_password:
+        raise HTTPException(422, "password must be different")
+
+    user.password = hash_password(body.new_password)
+    await db.commit()
+
+    return {"message": "user password updated"}
+
+@router.patch("/paid")
+async def edit_user_paid(
+    id: UserDep,
+    paid: int,
+    db: SessionDep,
+):
+    user = await db.scalar(select(User).filter_by(id=id))
+    if not user:
+        raise HTTPException(404, "user not found")
+
+    user.paid += paid
+    await db.commit()
+
+    return {"message": "user password updated"}
+
+@router.delete("/")
+async def delete_user(
+    id: UserDep,
+    db: SessionDep,
+):
+    user = await db.scalar(select(User).filter_by(id=id))
+    if not user:
+        raise HTTPException(404, "user not found")
+    
+    await db.delete(user)
+    await db.commit()
+
+    return {"message": "user deleted"}

@@ -28,7 +28,7 @@ def signJWT(
 class JWTBearer(HTTPBearer):
     def __init__(
         self, 
-        role: str = Roles.admin,
+        role: Roles = Roles.admin,
     ):
         super().__init__(auto_error=True)
         self.role = role
@@ -49,9 +49,9 @@ class JWTBearer(HTTPBearer):
             raise HTTPException(403, "auth error")
 
         if self.role == Roles.user:
-            allowed_roles = [Roles.user, Roles.admin]
+            allowed_roles = [Roles.user.value, Roles.admin.value]
         else:
-            allowed_roles = [self.role, Roles.admin]
+            allowed_roles = [self.role, Roles.admin.value]
 
         if payload.get("role") not in allowed_roles:
             raise HTTPException(403, "access denied for this role")

@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
 # ALEMBIC
 # alembic init migrations
-# alembic revision --autogenerate -m "xyz"
+# alembic revision --autogenerate -m "init"
 # alembic upgrade head
 
 # WINDOWS

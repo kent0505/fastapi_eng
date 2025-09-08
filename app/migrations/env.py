@@ -5,6 +5,7 @@ from alembic import context
 from core.config import settings
 from db import Base
 from db.user import User
+from db.lesson import Lesson
 
 config = context.config
 
