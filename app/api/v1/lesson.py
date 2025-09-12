@@ -12,7 +12,7 @@ async def add_lesson(
 ):
     lesson = Lesson(
         title=body.title,
-        body=body.content,
+        content=body.content,
     )
     db.add(lesson)
     await db.commit()

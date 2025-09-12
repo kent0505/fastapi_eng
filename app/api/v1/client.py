@@ -3,6 +3,7 @@ from core.security import JWTBearer, Roles
 from db import SessionDep, select
 from db.lesson import Lesson
 from db.word import Word
+from db.sentence import Sentence
 
 router = APIRouter(dependencies=[Depends(JWTBearer(role=Roles.user))])
 
@@ -17,3 +18,9 @@ async def get_words(db: SessionDep):
     words = (await db.scalars(select(Word))).all()
 
     return {"words": words}
+
+@router.get("/sentences")
+async def get_sentences(db: SessionDep):
+    sentences = (await db.scalars(select(Sentence))).all()
+
+    return {"sentences": sentences}
