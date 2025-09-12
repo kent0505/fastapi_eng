@@ -9,9 +9,6 @@ class User(Base):
     age: Mapped[str] = mapped_column(nullable=True)
     photo: Mapped[str] = mapped_column(nullable=True)
     role: Mapped[str] = mapped_column() # admin, user
-    lesson: Mapped[int] = mapped_column(default=1)
-    paid: Mapped[int] = mapped_column(default=0)
-    activities: Mapped[int] = mapped_column(default=0)
 
 class LoginSchema(BaseModel):
     username: str

@@ -12,7 +12,7 @@ async def add_lesson(
 ):
     lesson = Lesson(
         title=body.title,
-        body=body.body,
+        body=body.content,
     )
     db.add(lesson)
     await db.commit()
@@ -34,7 +34,7 @@ async def edit_lesson(
         raise HTTPException(404, "lesson not found")
 
     lesson.title = body.title
-    lesson.body = body.body
+    lesson.content = body.content
     await db.commit()
 
     return {"message": "lesson updated"}

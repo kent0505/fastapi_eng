@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from core.utils import check_password, hash_password
 from core.security import JWTBearer, Roles, UserDep
 from db import SessionDep, select
@@ -15,9 +15,6 @@ async def get_user(
     if not user:
         raise HTTPException(404, "user not found")
 
-    user.activities += 1
-    await db.commit()
-
     return {
         "user": {
             "id": user.id,
@@ -25,9 +22,6 @@ async def get_user(
             "age": user.age,
             "photo": user.photo,
             "role": user.role,
-            "lesson": user.lesson,
-            "paid": user.paid,
-            "activities": user.activities,
         }
     }
 
@@ -94,21 +88,6 @@ async def edit_user_password(
 #     # await db.commit()
 
 #     return {"message": "user photo updated"}
-
-@router.patch("/paid")
-async def edit_user_paid(
-    id: UserDep,
-    paid: int,
-    db: SessionDep,
-):
-    user = await db.scalar(select(User).filter_by(id=id))
-    if not user:
-        raise HTTPException(404, "user not found")
-
-    user.paid += paid
-    await db.commit()
-
-    return {"message": "user paid updated"}
 
 @router.delete("/")
 async def delete_user(

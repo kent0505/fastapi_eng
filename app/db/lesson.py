@@ -5,9 +5,9 @@ class Lesson(Base):
     __tablename__ = "lessons"
 
     title: Mapped[str] = mapped_column()
-    body: Mapped[str] = mapped_column()
-    position: Mapped[int] = mapped_column(Float, nullable=True)
+    content: Mapped[str] = mapped_column()
+    position: Mapped[int] = mapped_column(Float, default=0)
 
 class LessonSchema(BaseModel):
     title: str
-    body: str
+    content: str
