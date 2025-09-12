@@ -45,7 +45,7 @@ async def register(
 
     if body.password.__len__() < 5:
         raise HTTPException(422, "password must be at least 5 characters long")
-    
+
     admin = await db.scalar(select(User).filter_by(role=Roles.admin.value))
 
     user = User(

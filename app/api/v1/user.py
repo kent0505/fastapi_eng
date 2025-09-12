@@ -34,7 +34,7 @@ async def edit_user(
     user = await db.scalar(select(User).filter_by(id=id))
     if not user:
         raise HTTPException(404, "user not found")
-    
+
     username = body.username.lower().strip()
 
     if user.username != username:
@@ -57,13 +57,13 @@ async def edit_user_password(
     user = await db.scalar(select(User).filter_by(id=id))
     if not user:
         raise HTTPException(404, "user not found")
-    
+
     if not check_password(body.password, user.password):
         raise HTTPException(401, "invalid credentials")
-    
+
     if body.new_password.__len__() < 5:
         raise HTTPException(422, "password must be at least 5 characters long")
-    
+
     if body.password == body.new_password:
         raise HTTPException(422, "password must be different")
 
@@ -97,7 +97,7 @@ async def delete_user(
     user = await db.scalar(select(User).filter_by(id=id))
     if not user:
         raise HTTPException(404, "user not found")
-    
+
     await db.delete(user)
     await db.commit()
 

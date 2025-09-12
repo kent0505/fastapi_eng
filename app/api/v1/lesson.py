@@ -64,5 +64,6 @@ async def delete_lesson(
         raise HTTPException(404, "lesson not found")
 
     await db.delete(lesson)
+    await db.commit()
 
     return {"message": "lesson deleted"}

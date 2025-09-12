@@ -40,10 +40,11 @@ async def delete_word(
     id: int,
     db: SessionDep,
 ):
-    word = await db.scalar(select(word).filter_by(id=id))
+    word = await db.scalar(select(Word).filter_by(id=id))
     if not word:
         raise HTTPException(404, "word not found")
 
     await db.delete(word)
+    await db.commit()
 
     return {"message": "word deleted"}
