@@ -23,3 +23,16 @@ def check_password(
         return hashed
     except:
         return False
+
+def parse_words(path: str):
+    result = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue  # skip empty lines
+            if " - " not in line:
+                continue  # skip malformed lines
+            en, ru = line.split(" - ", 1)  # split only on first " - "
+            result.append({"en": en.strip(), "ru": ru.strip()})
+    return result

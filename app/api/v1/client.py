@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from core.security import JWTBearer, Roles
+from core.utils import parse_words
 from db import SessionDep, select
 from db.lesson import Lesson
 from db.word import Word
@@ -15,7 +16,8 @@ async def get_lessons(db: SessionDep):
 
 @router.get("/words")
 async def get_words(db: SessionDep):
-    words = (await db.scalars(select(Word))).all()
+    # words = (await db.scalars(select(Word))).all()
+    words = parse_words("static/words.txt")
 
     return {"words": words}
 
