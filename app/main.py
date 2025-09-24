@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from core.config import settings
 from db import engine
 from home import router as home_router
-from api.v1 import router as v1_router
+from api.v1 import router as v1
 
 import uvicorn
 import logging
@@ -37,7 +37,7 @@ app.mount(
 )
 
 app.include_router(home_router, include_in_schema=False)
-app.include_router(v1_router)
+app.include_router(v1)
 
 if __name__ == "__main__":
     uvicorn.run(

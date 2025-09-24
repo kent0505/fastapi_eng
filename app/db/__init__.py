@@ -1,6 +1,6 @@
 from fastapi import Depends
 from typing import Annotated
-from sqlalchemy import Float, select
+from sqlalchemy import Float, select, update
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from core.config import settings

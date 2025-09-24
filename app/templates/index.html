@@ -40,7 +40,7 @@
             <tr>
                 <th>id</th>
                 <th>title</th>
-                <th>content</th>
+                <th>data</th>
                 <th>position</th>
             </tr>
         </thead>
@@ -49,28 +49,50 @@
                 <tr>
                     <td>{{ lesson.id }}</td>
                     <td>{{ lesson.title }}</td>
-                    <td>{{ lesson.content }}</td>
+                    <td>{{ lesson.data }}</td>
                     <td>{{ lesson.position }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <h2>Word</h2>
+    <h2>Question</h2>
     <table>
         <thead>
             <tr>
                 <th>id</th>
-                <th>en</th>
-                <th>ru</th>
+                <th>title</th>
+                <th>lid</th>
             </tr>
         </thead>
         <tbody>
-            {% for word in words %}
+            {% for question in questions %}
                 <tr>
-                    <td>{{ word.id }}</td>
-                    <td>{{ word.en }}</td>
-                    <td>{{ word.ru }}</td>
+                    <td>{{ question.id }}</td>
+                    <td>{{ question.title }}</td>
+                    <td>{{ question.lid }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Answer</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>correct</th>
+                <th>qid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for answer in answers %}
+                <tr>
+                    <td>{{ answer.id }}</td>
+                    <td>{{ answer.title }}</td>
+                    <td>{{ answer.correct }}</td>
+                    <td>{{ answer.qid }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -91,6 +113,28 @@
                     <td>{{ sentence.id }}</td>
                     <td>{{ sentence.text }}</td>
                     <td>{{ sentence.additional }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Article</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>data</th>
+                <th>cid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+                <tr>
+                    <td>{{ article.id }}</td>
+                    <td>{{ article.title }}</td>
+                    <td>{{ article.data }}</td>
+                    <td>{{ article.cid }}</td>
                 </tr>
             {% endfor %}
         </tbody>

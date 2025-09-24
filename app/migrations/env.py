@@ -6,8 +6,10 @@ from core.config import settings
 from db import Base
 from db.user import User
 from db.lesson import Lesson
-from db.word import Word
+from db.question import Question
+from db.answer import Answer
 from db.sentence import Sentence
+from db.article import Article
 
 config = context.config
 
