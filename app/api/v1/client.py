@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, Depends
-from core.security import JWTBearer, Roles
+from core.security import verify_api_key
 from db import SessionDep, select
 from db.lesson import Lesson
 from db.question import Question
@@ -7,7 +7,7 @@ from db.answer import Answer
 from db.sentence import Sentence
 from db.article import Article
 
-router = APIRouter(dependencies=[Depends(JWTBearer(role=Roles.user))])
+router = APIRouter(dependencies=[Depends(verify_api_key)])
 
 @router.get("/lessons")
 async def get_lessons(db: SessionDep):

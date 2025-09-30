@@ -14,6 +14,7 @@ class JWT(BaseModel):
     key: str = os.getenv("KEY")
     algorithm: str = "HS256"
     admin: str = os.getenv("ADMIN")
+    api_key: str = os.getenv("API_KEY")
 
 class DB(BaseModel):
     url: str = os.getenv("POSTGRES_URL")

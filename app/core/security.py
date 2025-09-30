@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException, Depends
+from fastapi import Request, HTTPException, Depends, Header
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Annotated
 from enum import Enum
@@ -59,3 +59,7 @@ class JWTBearer(HTTPBearer):
         return payload.get("id")
 
 UserDep = Annotated[int, Depends(JWTBearer(role=Roles.user))]
+
+def verify_api_key(api_key: str = Header()):
+    if api_key != settings.jwt.api_key:
+        raise HTTPException(403, "invalid api key")
